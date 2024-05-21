@@ -17,3 +17,11 @@ body
     left: 0;
     outline: none;
 }
+
+h1 {
+    position: absolute;
+    top: 1em;
+    left: 1em;
+    color: white;
+    z-index: 10;
+}
