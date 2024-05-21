@@ -9,7 +9,13 @@ const gui = new GUI()
 
 const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
+
 const textureLoader = new THREE.TextureLoader()
+const earthDayTexture = textureLoader.load('./earth/day.jpg')
+earthDayTexture.colorSpace = THREE.SRGBColorSpace
+const earthNightTexture = textureLoader.load('./earth/night.jpg')
+earthNightTexture.colorSpace = THREE.SRGBColorSpace
+const earthSpecularCloudsTexture = textureLoader.load('./earth/scpecularClouds.jpg')
 
 const earthGeometry = new THREE.SphereGeometry(2, 64, 64)
 const earthMaterial = new THREE.ShaderMaterial({
@@ -17,7 +23,10 @@ const earthMaterial = new THREE.ShaderMaterial({
     fragmentShader: earthFragmentShader,
     uniforms:
     {
-    }
+        uNightTexture: new THREE.Uniform(earthNightTexture),
+        uDayTexture: new THREE.Uniform(earthDayTexture),
+        uSpecularCloudsTexture: new THREE.Uniform(earthSpecularCloudsTexture)
+    }   
 })
 const earth = new THREE.Mesh(earthGeometry, earthMaterial)
 scene.add(earth)
