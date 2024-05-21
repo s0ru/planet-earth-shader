@@ -20,6 +20,10 @@ earthNightTexture.anisotropy = 8
 const earthSpecularCloudsTexture = textureLoader.load('./earth/specularClouds.jpg')
 earthSpecularCloudsTexture.anisotropy = 8
 
+const earthParameters = {
+    atmosphereDayColor: '#00aaff',
+    atmosphereNightColor: '#ff6600'
+}
 const earthGeometry = new THREE.SphereGeometry(2, 64, 64)
 const earthMaterial = new THREE.ShaderMaterial({
     vertexShader: earthVertexShader,
@@ -29,7 +33,9 @@ const earthMaterial = new THREE.ShaderMaterial({
         uNightTexture: new THREE.Uniform(earthNightTexture),
         uDayTexture: new THREE.Uniform(earthDayTexture),
         uSpecularCloudsTexture: new THREE.Uniform(earthSpecularCloudsTexture),
-        uSunDirection: new THREE.Uniform(new THREE.Vector3())
+        uSunDirection: new THREE.Uniform(new THREE.Vector3()),
+        uAtmosphereDayColor : new THREE.Uniform(new THREE.Color(earthParameters.atmosphereDayColor)),
+        uAtmosphereNightColor : new THREE.Uniform(new THREE.Color(earthParameters.atmosphereNightColor))
     }  
 })
 const earth = new THREE.Mesh(earthGeometry, earthMaterial)
@@ -112,5 +118,20 @@ gui
     .min(- Math.PI)
     .max(Math.PI)
     .onChange(updateSun)
+
+gui
+    .addColor(earthParameters, 'atmosphereDayColor')
+    .onChange(() =>
+    {
+        earthMaterial.uniforms.uAtmosphereDayColor.value.set(earthParameters.atmosphereDayColor)
+    })
+
+gui
+    .addColor(earthParameters, 'atmosphereNightColor')
+    .onChange(() =>
+    {
+        earthMaterial.uniforms.uAtmosphereTwilightColor.value.set(earthParameters.atmosphereTwilightColor)
+    })
+
 
 tick()

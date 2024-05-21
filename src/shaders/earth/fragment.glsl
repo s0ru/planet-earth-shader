@@ -2,6 +2,8 @@ uniform sampler2D uDayTexture;
 uniform sampler2D uNightTexture;
 uniform sampler2D uSpecularCloudsTexture;
 uniform vec3 uSunDirection;
+uniform vec3 uAtmosphereDayColor;
+uniform vec3 uAtmosphereNightColor;
 
 varying vec2 vUv;
 varying vec3 vNormal;
@@ -24,6 +26,11 @@ void main()
     float cloudMix = smoothstep(0.5, 1.0, specularCloudColor.g) * dayMix;
     color = mix(color, vec3(1.0), cloudMix);
 
+    float fresnel = pow(dot(viewDirection, normal) + 1.0, 2.0);
+
+    float atmosphereDayMix = smoothstep(-0.5, 1.0, sunOrientation);
+    vec3 atmosphereColor = mix(uAtmosphereNightColor, uAtmosphereDayColor, atmosphereDayMix);
+    color = mix(color, atmosphereColor, fresnel);
 
     gl_FragColor = vec4(color, 1.0);
     #include <tonemapping_fragment>
