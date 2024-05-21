@@ -25,11 +25,28 @@ const earthMaterial = new THREE.ShaderMaterial({
     {
         uNightTexture: new THREE.Uniform(earthNightTexture),
         uDayTexture: new THREE.Uniform(earthDayTexture),
-        uSpecularCloudsTexture: new THREE.Uniform(earthSpecularCloudsTexture)
+        uSpecularCloudsTexture: new THREE.Uniform(earthSpecularCloudsTexture),
+        uSunDirection: new THREE.Uniform(new THREE.Vector3())
     }   
 })
 const earth = new THREE.Mesh(earthGeometry, earthMaterial)
 scene.add(earth)
+
+const sunSpherical = new THREE.Spherical(1, Math.PI * 0.5, 0.5)
+const sunDirection = new THREE.Vector3()
+
+const sun = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(0.1, 2),
+    new THREE.MeshBasicMaterial()
+)
+scene.add(sun)
+
+const updateSun = () => {
+    sunDirection.setFromSpherical(sunSpherical)
+    sun.position.copy(sunDirection).multiplyScalar(5)
+    earthMaterial.uniforms.uSunDirection.value = sunDirection
+}
+updateSun()
 
 const sizes = {
     width: window.innerWidth,
@@ -79,5 +96,18 @@ const tick = () =>
     renderer.render(scene, camera)
     window.requestAnimationFrame(tick)
 }
+
+// Debug
+gui
+    .add(sunSpherical, 'phi')
+    .min(0)
+    .max(Math.PI)
+    .onChange(updateSun)
+
+gui
+    .add(sunSpherical, 'theta')
+    .min(- Math.PI)
+    .max(Math.PI)
+    .onChange(updateSun)
 
 tick()
