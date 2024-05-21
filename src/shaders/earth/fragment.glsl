@@ -32,6 +32,10 @@ void main()
     vec3 atmosphereColor = mix(uAtmosphereNightColor, uAtmosphereDayColor, atmosphereDayMix);
     color = mix(color, atmosphereColor, fresnel * atmosphereDayMix);
 
+    vec3 reflection = reflect(-uSunDirection, normal);
+    float specular = pow(max(- dot(reflection, viewDirection), 0.0), 40.0);
+    color += specular;
+
     gl_FragColor = vec4(color, 1.0);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
