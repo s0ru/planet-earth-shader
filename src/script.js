@@ -3,6 +3,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 import earthVertexShader from './shaders/earth/vertex.glsl'
 import earthFragmentShader from './shaders/earth/fragment.glsl'
+import atmosphereVertexShader from './shaders/atmosphere/vertex.glsl'
+import atmosphereFragmentShader from './shaders/atmosphere/fragment.glsl'
 
 // Debug
 const gui = new GUI()
@@ -41,6 +43,22 @@ const earthMaterial = new THREE.ShaderMaterial({
 const earth = new THREE.Mesh(earthGeometry, earthMaterial)
 scene.add(earth)
 
+const atmosphereMaterial = new THREE.ShaderMaterial({
+    vertexShader: atmosphereVertexShader,
+    fragmentShader: atmosphereFragmentShader,
+    uniforms:
+    {
+        uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
+        uAtmosphereDayColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereDayColor)),
+        uAtmosphereNightColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereNightColor))
+    },
+    side: THREE.BackSide,
+    transparent: true
+})
+const atmosphere = new THREE.Mesh(earthGeometry, atmosphereMaterial);
+atmosphere.scale.set(1.04, 1.04, 1.04)
+scene.add(atmosphere);
+
 const sunSpherical = new THREE.Spherical(1, Math.PI * 0.5, 0.5)
 const sunDirection = new THREE.Vector3()
 
@@ -54,6 +72,7 @@ const updateSun = () => {
     sunDirection.setFromSpherical(sunSpherical)
     sun.position.copy(sunDirection).multiplyScalar(5)
     earthMaterial.uniforms.uSunDirection.value = sunDirection
+    atmosphereMaterial.uniforms.uSunDirection.value.copy(sunDirection)
 }
 updateSun()
 
@@ -130,8 +149,23 @@ gui
     .addColor(earthParameters, 'atmosphereNightColor')
     .onChange(() =>
     {
-        earthMaterial.uniforms.uAtmosphereTwilightColor.value.set(earthParameters.atmosphereTwilightColor)
+        earthMaterial.uniforms.uAtmosphereNightColor.value.set(earthParameters.atmosphereNightColor)
     })
 
+gui
+    .addColor(earthParameters, 'atmosphereDayColor')
+    .onChange(() =>
+    {
+        earthMaterial.uniforms.uAtmosphereDayColor.value.set(earthParameters.atmosphereDayColor)
+        atmosphereMaterial.uniforms.uAtmosphereDayColor.value.set(earthParameters.atmosphereDayColor)
+    })
+
+gui
+    .addColor(earthParameters, 'atmosphereNightColor')
+    .onChange(() =>
+    {
+        earthMaterial.uniforms.uAtmosphereNightColor.value.set(earthParameters.atmosphereNightColor)
+        atmosphereMaterial.uniforms.uAtmosphereNightColor.value.set(earthParameters.atmosphereNightColor)
+    })
 
 tick()
