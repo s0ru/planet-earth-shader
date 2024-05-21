@@ -30,7 +30,7 @@ void main()
 
     float atmosphereDayMix = smoothstep(-0.5, 1.0, sunOrientation);
     vec3 atmosphereColor = mix(uAtmosphereNightColor, uAtmosphereDayColor, atmosphereDayMix);
-    color = mix(color, atmosphereColor, fresnel);
+    color = mix(color, atmosphereColor, fresnel * atmosphereDayMix);
 
     gl_FragColor = vec4(color, 1.0);
     #include <tonemapping_fragment>
