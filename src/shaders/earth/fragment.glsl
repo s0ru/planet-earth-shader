@@ -20,6 +20,11 @@ void main()
     vec3 nightColor = texture(uNightTexture, vUv).rgb;
     color = mix(nightColor, dayColor, dayMix);
 
+    vec2 specularCloudColor = texture(uSpecularCloudsTexture, vUv).rg;
+    float cloudMix = smoothstep(0.5, 1.0, specularCloudColor.g) * dayMix;
+    color = mix(color, vec3(1.0), cloudMix);
+
+
     gl_FragColor = vec4(color, 1.0);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>

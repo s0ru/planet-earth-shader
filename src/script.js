@@ -17,7 +17,7 @@ earthDayTexture.anisotropy = 8
 const earthNightTexture = textureLoader.load('./earth/night.jpg')
 earthNightTexture.colorSpace = THREE.SRGBColorSpace
 earthNightTexture.anisotropy = 8
-const earthSpecularCloudsTexture = textureLoader.load('./earth/scpecularClouds.jpg')
+const earthSpecularCloudsTexture = textureLoader.load('./earth/specularClouds.jpg')
 earthSpecularCloudsTexture.anisotropy = 8
 
 const earthGeometry = new THREE.SphereGeometry(2, 64, 64)
